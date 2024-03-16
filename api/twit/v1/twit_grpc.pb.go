@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.12.4
-// source: back-template/api/twit/twit.proto
+// source: api/twit/v1/twit.proto
 
 package pb
 
@@ -209,5 +209,5 @@ var TwitAPI_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "back-template/api/twit/twit.proto",
+	Metadata: "api/twit/v1/twit.proto",
 }
