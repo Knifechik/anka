@@ -6,19 +6,20 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "ank/back-template/api/twit/v1;pb";
 
+// Service for managing users twits
 service TwitAPI{
-  rpc TwitPost(TwitPostRequest) returns (TwitPostResponse){
 
-  }
-  rpc TwitGet(TwitGetRequest) returns (TwitGetResponse){
+  //Saves user's twit
+  rpc TwitPost(TwitPostRequest) returns (TwitPostResponse){}
 
-  }
-  rpc TwitUpdate(TwitUpdateRequest) returns (TwitUpdateResponse){
+  //Return twit to user by id
+  rpc TwitGet(TwitGetRequest) returns (TwitGetResponse){}
 
-  }
-  rpc TwitDelete(TwitDeleteRequest) returns (TwitDeleteResponse){
+  //Update twit by id
+  rpc TwitUpdate(TwitUpdateRequest) returns (TwitUpdateResponse){}
 
-  }
+  //Delete twit by id
+  rpc TwitDelete(TwitDeleteRequest) returns (TwitDeleteResponse){}
 }
 
 message Twit{
