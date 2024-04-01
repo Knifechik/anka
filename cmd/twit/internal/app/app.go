@@ -1,5 +1,6 @@
 package app
 
 type App struct {
-	repo Repo
+	repo     Repo
+	sessions Sessions
 }

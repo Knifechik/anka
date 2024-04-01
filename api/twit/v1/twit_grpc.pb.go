@@ -22,9 +22,13 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TwitAPIClient interface {
+	// Saves user's twit
 	TwitPost(ctx context.Context, in *TwitPostRequest, opts ...grpc.CallOption) (*TwitPostResponse, error)
+	// Return twit to user by id
 	TwitGet(ctx context.Context, in *TwitGetRequest, opts ...grpc.CallOption) (*TwitGetResponse, error)
+	// Update twit by id
 	TwitUpdate(ctx context.Context, in *TwitUpdateRequest, opts ...grpc.CallOption) (*TwitUpdateResponse, error)
+	// Delete twit by id
 	TwitDelete(ctx context.Context, in *TwitDeleteRequest, opts ...grpc.CallOption) (*TwitDeleteResponse, error)
 }
 
@@ -76,9 +80,13 @@ func (c *twitAPIClient) TwitDelete(ctx context.Context, in *TwitDeleteRequest, o
 // All implementations must embed UnimplementedTwitAPIServer
 // for forward compatibility
 type TwitAPIServer interface {
+	// Saves user's twit
 	TwitPost(context.Context, *TwitPostRequest) (*TwitPostResponse, error)
+	// Return twit to user by id
 	TwitGet(context.Context, *TwitGetRequest) (*TwitGetResponse, error)
+	// Update twit by id
 	TwitUpdate(context.Context, *TwitUpdateRequest) (*TwitUpdateResponse, error)
+	// Delete twit by id
 	TwitDelete(context.Context, *TwitDeleteRequest) (*TwitDeleteResponse, error)
 	mustEmbedUnimplementedTwitAPIServer()
 }

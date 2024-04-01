@@ -39,11 +39,14 @@ message TwitPostResponse{
 }
 
 message TwitGetRequest{
-  string id = 1;
+  string author_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
 }
 
 message TwitGetResponse{
-  Twit twit = 1;
+  repeated Twit twit = 1;
+  int32 total = 2;
 }
 
 message TwitUpdateRequest{
