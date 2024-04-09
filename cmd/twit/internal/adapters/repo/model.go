@@ -16,8 +16,10 @@ type dbTwit struct {
 
 func (db dbTwit) convert() *app.Twit {
 	return &app.Twit{
-		ID:       db.ID,
-		AuthorID: db.AuthorID,
-		Text:     db.Text,
+		ID:        db.ID,
+		AuthorID:  db.AuthorID,
+		Text:      db.Text,
+		CreatedAt: db.CreatedAt,
+		UpdatedAt: db.UpdatedAt,
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	twit_pb "github.com/ZergsLaw/back-template/api/twit/v1"
+	"github.com/ZergsLaw/back-template/internal/adapters/session"
 	"github.com/ZergsLaw/back-template/internal/dom"
 	"github.com/gofrs/uuid"
 )
@@ -18,7 +19,8 @@ func (a *api) TwitPost(ctx context.Context, request *twit_pb.TwitPostRequest) (*
 }
 
 func (a *api) TwitGet(ctx context.Context, request *twit_pb.TwitGetRequest) (*twit_pb.TwitGetResponse, error) {
-	twit, total, err := a.app.TwitGet(ctx, dom.Session{}, uuid.FromStringOrNil(request.AuthorId), int(request.Limit), int(request.Offset))
+	userSession := session.FromContext(ctx)
+	twit, total, err := a.app.TwitGet(ctx, *userSession, uuid.FromStringOrNil(request.AuthorId), int(request.Limit), int(request.Offset))
 	if err != nil {
 		return nil, fmt.Errorf("a.app.TwitGet: %w", err)
 	}
@@ -27,7 +29,8 @@ func (a *api) TwitGet(ctx context.Context, request *twit_pb.TwitGetRequest) (*tw
 }
 
 func (a *api) TwitUpdate(ctx context.Context, request *twit_pb.TwitUpdateRequest) (*twit_pb.TwitUpdateResponse, error) {
-	twit, err := a.app.TwitUpdate(ctx, dom.Session{}, uuid.FromStringOrNil(request.Id), request.Text)
+	userSession := session.FromContext(ctx)
+	twit, err := a.app.TwitUpdate(ctx, *userSession, uuid.FromStringOrNil(request.Id), request.Text)
 	if err != nil {
 		return nil, fmt.Errorf("a.app.TwitUpdate: %w", err)
 	}
@@ -36,7 +39,8 @@ func (a *api) TwitUpdate(ctx context.Context, request *twit_pb.TwitUpdateRequest
 }
 
 func (a *api) TwitDelete(ctx context.Context, request *twit_pb.TwitDeleteRequest) (*twit_pb.TwitDeleteResponse, error) {
-	err := a.app.TwitDelete(ctx, dom.Session{}, uuid.FromStringOrNil(request.Id))
+	userSession := session.FromContext(ctx)
+	err := a.app.TwitDelete(ctx, *userSession, uuid.FromStringOrNil(request.Id))
 	if err != nil {
 		return nil, fmt.Errorf("a.app.TwitDelete: %w", err)
 	}
