@@ -10,7 +10,8 @@ import (
 )
 
 func (a *api) TwitPost(ctx context.Context, request *twit_pb.TwitPostRequest) (*twit_pb.TwitPostResponse, error) {
-	twit, err := a.app.TwitPost(ctx, dom.Session{}, request.Text)
+	userSession := session.FromContext(ctx)
+	twit, err := a.app.TwitPost(ctx, *userSession, request.Text)
 	if err != nil {
 		return nil, fmt.Errorf("a.app.TwitPost: %w", err)
 	}
@@ -19,8 +20,7 @@ func (a *api) TwitPost(ctx context.Context, request *twit_pb.TwitPostRequest) (*
 }
 
 func (a *api) TwitGet(ctx context.Context, request *twit_pb.TwitGetRequest) (*twit_pb.TwitGetResponse, error) {
-	userSession := session.FromContext(ctx)
-	twit, total, err := a.app.TwitGet(ctx, *userSession, uuid.FromStringOrNil(request.AuthorId), int(request.Limit), int(request.Offset))
+	twit, total, err := a.app.TwitGet(ctx, dom.Session{}, uuid.FromStringOrNil(request.AuthorId), int(request.Limit), int(request.Offset))
 	if err != nil {
 		return nil, fmt.Errorf("a.app.TwitGet: %w", err)
 	}
