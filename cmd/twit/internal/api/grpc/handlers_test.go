@@ -57,14 +57,13 @@ func TestApi_TwitPost(t *testing.T) {
 	)
 
 	testCases := map[string]struct {
-		id      uuid.UUID
 		res     *app.Twit
 		text    string
 		appErr  error
 		wantErr error
 	}{
-		"success":        {id, res, text, nil, nil},
-		"a.app.TwitPost": {id, res, text, errAny, errInternal},
+		"success":        {res, text, nil, nil},
+		"a.app.TwitPost": {res, text, errAny, errInternal},
 	}
 
 	for name, tc := range testCases {
@@ -80,6 +79,7 @@ func TestApi_TwitPost(t *testing.T) {
 				Text: tc.text,
 			})
 			assert.ErrorIs(err, tc.wantErr)
+			assert.Equal(text, tc.res.Text)
 		})
 	}
 }
