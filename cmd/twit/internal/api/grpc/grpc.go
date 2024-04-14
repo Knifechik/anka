@@ -19,6 +19,7 @@ import (
 )
 
 type application interface {
+	Auth(ctx context.Context, token string) (*dom.Session, error)
 	TwitPost(ctx context.Context, session dom.Session, text string) (*app.Twit, error)
 	TwitGet(ctx context.Context, session dom.Session, id uuid.UUID, limit, offset int) ([]app.Twit, int, error)
 	TwitUpdate(ctx context.Context, session dom.Session, id uuid.UUID, text string) (*app.Twit, error)
@@ -35,7 +36,6 @@ type api struct {
 func New(ctx context.Context, m metrics.Metrics, applications application, reg *prometheus.Registry, namespace string) *grpc.Server {
 	log := logger.FromContext(ctx)
 	subsystem := "api"
-
 	grpcMetrics := grpchelper.NewServerMetrics(reg, namespace, subsystem)
 
 	srv, health := grpchelper.NewServer(m, log, grpcMetrics, apiError,
@@ -61,7 +61,6 @@ func apiError(err error) *status.Status {
 	if err == nil {
 		return nil
 	}
-
 	code := codes.Internal
 	switch {
 	case errors.Is(err, app.ErrAccessDenied):

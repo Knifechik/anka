@@ -44,9 +44,7 @@ func TestApi_VerificationEmail(t *testing.T) {
 
 			ctx, c, mockApp, assert := start(t, dom.UserStatusDefault)
 
-			if tc.email == email {
-				mockApp.EXPECT().VerificationEmail(gomock.Any(), tc.email).Return(tc.appErr)
-			}
+			mockApp.EXPECT().VerificationEmail(gomock.Any(), tc.email).Return(tc.appErr)
 
 			_, err := c.VerificationEmail(ctx, &user_pb.VerificationEmailRequest{
 				Email: tc.email,

@@ -37,6 +37,15 @@ func TestApp_VerificationEmail(t *testing.T) {
 			assert.ErrorIs(err, tc.want)
 		})
 	}
+	//t.Run("success", func(t *testing.T) {
+	//	t.Parallel()
+	//
+	//	ctx, module, mocks, assert := start(t)
+	//	mocks.repo.EXPECT().ByEmail(ctx, "email@email.com").Return(nil, nil)
+	//
+	//	err := module.VerificationEmail(ctx, "email@email.com")
+	//	assert.ErrorIs(err, app.ErrEmailExist)
+	//})
 }
 
 func TestApp_VerificationUsername(t *testing.T) {
