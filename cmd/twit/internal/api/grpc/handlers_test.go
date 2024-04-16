@@ -9,6 +9,7 @@ import (
 	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 	"testing"
 )
 
@@ -50,9 +51,13 @@ func TestApi_TwitPost(t *testing.T) {
 	t.Parallel()
 
 	var (
-		text        = "ya ne hochu etogo govna"
-		id          = uuid.Must(uuid.NewV4())
-		res         = &app.Twit{ID: id, Text: text}
+		id       = uuid.Must(uuid.NewV4())
+		authorId = uuid.Must(uuid.NewV4())
+		text     = "ya ne hochu etogo govna"
+		appRes   = &app.Twit{ID: id, AuthorID: authorId, Text: text}
+		res      = &twit_pb.TwitPostResponse{
+			Twit: &twit_pb.Twit{
+				Id: id.String(), AuthorId: authorId.String(), Text: text}}
 		errInternal = status.Error(codes.Internal, fmt.Sprintf("a.app.TwitPost: %s", errAny))
 	)
 
@@ -60,10 +65,11 @@ func TestApi_TwitPost(t *testing.T) {
 		res     *app.Twit
 		text    string
 		appErr  error
+		want    *twit_pb.TwitPostResponse
 		wantErr error
 	}{
-		"success":        {res, text, nil, nil},
-		"a.app.TwitPost": {res, text, errAny, errInternal},
+		"success":        {appRes, text, nil, res, nil},
+		"a.app.TwitPost": {appRes, text, errAny, nil, errInternal},
 	}
 
 	for name, tc := range testCases {
@@ -75,11 +81,11 @@ func TestApi_TwitPost(t *testing.T) {
 
 			mockApp.EXPECT().TwitPost(gomock.Any(), session, tc.text).Return(tc.res, tc.appErr)
 
-			_, err := c.TwitPost(auth(ctx), &twit_pb.TwitPostRequest{
+			resp, err := c.TwitPost(auth(ctx), &twit_pb.TwitPostRequest{
 				Text: tc.text,
 			})
 			assert.ErrorIs(err, tc.wantErr)
-			assert.Equal(text, tc.res.Text)
+			assert.True(proto.Equal(resp, tc.want))
 		})
 	}
 }
