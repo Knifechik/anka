@@ -21,7 +21,7 @@ import (
 type application interface {
 	Auth(ctx context.Context, token string) (*dom.Session, error)
 	TwitPost(ctx context.Context, session dom.Session, text string) (*app.Twit, error)
-	TwitGet(ctx context.Context, session dom.Session, id uuid.UUID, limit, offset int) ([]app.Twit, int, error)
+	TwitGet(ctx context.Context, session dom.Session, authorID uuid.UUID, limit, offset int) ([]app.Twit, int, error)
 	TwitUpdate(ctx context.Context, session dom.Session, id uuid.UUID, text string) (*app.Twit, error)
 	TwitDelete(ctx context.Context, session dom.Session, id uuid.UUID) error
 }

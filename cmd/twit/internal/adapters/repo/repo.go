@@ -143,7 +143,7 @@ func (r *Repo) Search(ctx context.Context, authorId uuid.UUID, limit, offset int
 			return fmt.Errorf("db.SelectContext: %w", err)
 		}
 
-		const getTotal = `select count(*) over() as total from twit_table where author_id = $1`
+		const getTotal = `SELECT count(*) over() AS total FROM twit_table WHERE author_id = $1`
 		err = db.GetContext(ctx, &total, getTotal, authorId)
 		if err != nil {
 			return fmt.Errorf("db.GetContext: %w", err)
