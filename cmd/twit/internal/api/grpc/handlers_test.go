@@ -56,10 +56,23 @@ func TestApi_TwitPost(t *testing.T) {
 		id       = uuid.Must(uuid.NewV4())
 		authorId = uuid.Must(uuid.NewV4())
 		text     = "ya ne hochu etogo govna"
-		appRes   = &app.Twit{ID: id, AuthorID: authorId, Text: text}
-		res      = &twit_pb.TwitPostResponse{
+		now      = time.Now()
+		appRes   = &app.Twit{
+			ID:        id,
+			AuthorID:  authorId,
+			Text:      text,
+			CreatedAt: now,
+			UpdatedAt: now,
+		}
+		res = &twit_pb.TwitPostResponse{
 			Twit: &twit_pb.Twit{
-				Id: id.String(), AuthorId: authorId.String(), Text: text}}
+				Id:        id.String(),
+				AuthorId:  authorId.String(),
+				Text:      text,
+				CreatedAt: timestamppb.New(now),
+				UpdatedAt: timestamppb.New(now),
+			},
+		}
 		errInternal = status.Error(codes.Internal, fmt.Sprintf("a.app.TwitPost: %s", errAny))
 	)
 
@@ -96,26 +109,36 @@ func TestApi_TwitUpdate(t *testing.T) {
 	t.Parallel()
 
 	var (
-		id       = uuid.Must(uuid.NewV4())
+		ID       = uuid.Must(uuid.NewV4())
 		authorId = uuid.Must(uuid.NewV4())
 		text     = "ya ne hochu etogo govna"
-		appRes   = &app.Twit{ID: id, AuthorID: authorId, Text: text}
-		res      = &twit_pb.TwitUpdateResponse{
+		now      = time.Now()
+		appRes   = &app.Twit{
+			ID:        ID,
+			AuthorID:  authorId,
+			Text:      text,
+			CreatedAt: now,
+			UpdatedAt: now,
+		}
+		res = &twit_pb.TwitUpdateResponse{
 			Twit: &twit_pb.Twit{
-				Id: id.String(), AuthorId: authorId.String(), Text: text}}
+				Id:        ID.String(),
+				AuthorId:  authorId.String(),
+				Text:      text,
+				CreatedAt: timestamppb.New(now),
+				UpdatedAt: timestamppb.New(now),
+			}}
 		errInternal = status.Error(codes.Internal, fmt.Sprintf("a.app.TwitUpdate: %s", errAny))
 	)
 
 	testCases := map[string]struct {
-		id      uuid.UUID
-		text    string
 		appRes  *app.Twit
 		appErr  error
 		wantRes *twit_pb.TwitUpdateResponse
 		wantErr error
 	}{
-		"success":          {id, text, appRes, nil, res, nil},
-		"a.app.TwitUpdate": {id, text, appRes, errAny, nil, errInternal},
+		"success":          {appRes, nil, res, nil},
+		"a.app.TwitUpdate": {appRes, errAny, nil, errInternal},
 	}
 
 	for name, tc := range testCases {
@@ -125,11 +148,11 @@ func TestApi_TwitUpdate(t *testing.T) {
 
 			ctx, c, mockApp, assert := start(t, dom.UserStatusDefault)
 
-			mockApp.EXPECT().TwitUpdate(gomock.Any(), session, tc.id, tc.text).Return(tc.appRes, tc.appErr)
+			mockApp.EXPECT().TwitUpdate(gomock.Any(), session, ID, text).Return(tc.appRes, tc.appErr)
 
 			resp, err := c.TwitUpdate(auth(ctx), &twit_pb.TwitUpdateRequest{
-				Id:   tc.id.String(),
-				Text: tc.text,
+				Id:   ID.String(),
+				Text: text,
 			})
 			assert.ErrorIs(err, tc.wantErr)
 			assert.True(proto.Equal(resp, tc.wantRes))

@@ -7,11 +7,11 @@ import (
 )
 
 type dbTwit struct {
-	ID        uuid.UUID
-	AuthorID  uuid.UUID
-	Text      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        uuid.UUID `db:"id"`
+	AuthorID  uuid.UUID `db:"author_id"`
+	Text      string    `db:"text"`
+	CreatedAt time.Time `db:"created_at"`
+	UpdatedAt time.Time `db:"updated_at"`
 }
 
 func (db dbTwit) convert() *app.Twit {

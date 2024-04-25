@@ -66,7 +66,7 @@ func (r *Repo) Close() error {
 func (r *Repo) Save(ctx context.Context, t app.Twit) (twit *app.Twit, err error) {
 	dbtwit := dbTwit{}
 	err = r.sql.NoTx(func(db *sqlx.DB) error {
-		const query = `INSERT INTO twit_table (authorid, text) VALUES ($1, $2) RETURNING *`
+		const query = `INSERT INTO twit_table (author_id, text) VALUES ($1, $2) RETURNING *`
 		err = db.GetContext(ctx, &dbtwit, query, t.AuthorID, t.Text)
 
 		if err != nil {
@@ -94,7 +94,7 @@ func (r *Repo) ByID(ctx context.Context, id uuid.UUID) (twit *app.Twit, err erro
 	})
 	if err != nil {
 		return nil, err
-	}
+	} 
 
 	return dbtwit.convert(), nil
 }
@@ -102,10 +102,10 @@ func (r *Repo) ByID(ctx context.Context, id uuid.UUID) (twit *app.Twit, err erro
 func (r *Repo) Update(ctx context.Context, t app.Twit) (twit *app.Twit, err error) {
 	dbtwit := dbTwit{}
 	err = r.sql.NoTx(func(db *sqlx.DB) error {
-		const query = `UPDATE twit_table SET text = $1 WHERE id = $2`
-		err = db.GetContext(ctx, &dbtwit, query, t.ID)
+		const query = `UPDATE twit_table SET text = $1, updated_at = now() WHERE id = $2 RETURNING *`
+		err = db.GetContext(ctx, &dbtwit, query, t.Text, t.ID)
 		if err != nil {
-			return fmt.Errorf("sql.QueryRowContext: %w", err)
+			return fmt.Errorf("sql.GetContextContext: %w", err)
 		}
 
 		return nil
@@ -159,5 +159,5 @@ func (r *Repo) Search(ctx context.Context, authorId uuid.UUID, limit, offset int
 		return nil, 0, err
 	}
 
-	return twits, total, err
+	return twits, total, nil
 }
